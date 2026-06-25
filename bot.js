@@ -21,7 +21,7 @@ const PAYSTACK_BASE = 'https://api.paystack.co';
 const paystackClient = axios.create({
   baseURL: PAYSTACK_BASE,
   headers: {
-    Authorization: f'Bearer {PAYSTACK_SECRET}',
+    Authorization: `Bearer ${PAYSTACK_SECRET}`,
     'Content-Type': 'application/json'
   }
 });
