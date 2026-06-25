@@ -1,4 +1,5 @@
 require('dotenv').config();
+const axios = require('axios');
 const TelegramBotModule = require('node-telegram-bot-api');
 const TelegramBot =
   typeof TelegramBotModule === 'function'
@@ -14,6 +15,16 @@ if (!BOT_TOKEN) {
   console.error('BOT_TOKEN required in .env');
   process.exit(1);
 }
+
+const PAYSTACK_SECRET = (process.env.PAYSTACK_SECRET_KEY || '').trim();
+const PAYSTACK_BASE = 'https://api.paystack.co';
+const paystackClient = axios.create({
+  baseURL: PAYSTACK_BASE,
+  headers: {
+    Authorization: f'Bearer {PAYSTACK_SECRET}',
+    'Content-Type': 'application/json'
+  }
+});
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const ADMIN_IDS = new Set(
@@ -362,9 +373,19 @@ bot.on('callback_query', async (ctx) => {
       deal_id: dealId,
       price: formatCurrency(listing.price),
     });
+    const buyerEmail = '';
+    const paystackRes = await paystackClient.post('/transaction/initialize', {
+      email: buyerEmail || 'hackingzone234@gmail.com',
+      amount: Math.round((listing.price + 1000) * 100),
+      reference: `FF-${dealId}-${Date.now()}`,
+      metadata: { deal_id: dealId, source: 'telegram-bot' }
+    }).catch((e) => ({ data: null, error: e }));
+    const paymentLink = paystackRes.data?.data?.authorization_url || '';
     await bot.sendMessage(
       chatId,
-      `✅ Deal created!\nDeal ID: \`${dealId.slice(0, 8)}\`\nPrice: ${formatCurrency(listing.price)}\nStatus: PENDING\n\nReply with /claim \`${dealId.slice(0, 8)}\` to confirm your role.`,
+      `✅ Deal created!\nDeal ID: \`${dealId.slice(0, 8)}\`\nPrice: ${formatCurrency(listing.price)}\nMiddleman fee: ₦1,000\nStatus: PENDING\n\n` +
+        (paymentLink ? `💳 Pay now:\n${paymentLink}\n\n` : '⚠️ Payment link unavailable.\n') +
+        `Reply with /claim \`${dealId.slice(0, 8)}\` to confirm your role.`,
       {
         reply_markup: {
           keyboard: [
