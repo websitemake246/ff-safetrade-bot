@@ -1103,18 +1103,15 @@ bot.on('message', async (msg) => {
   }
 
   if (text.startsWith('🛒 Browse Listings')) {
-    await bot.processText('/listings');
-    return;
+    text = '/listings';
   }
 
   if (text.startsWith('📦 My Deals')) {
-    await bot.processText('/deals');
-    return;
+    text = '/deals';
   }
 
   if (text.startsWith('ℹ️ Help')) {
-    await bot.processText('/help');
-    return;
+    text = '/help';
   }
 
   const conversation = getConversation(telegramId);
