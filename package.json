@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "db:setup": "node -e 'require(\"./database\"); console.log(\"DB setup done\")'"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.4.3",
     "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
     "node-telegram-bot-api": "^0.66.0",
