@@ -1,5 +1,11 @@
 require('dotenv').config();
-const TelegramBot = require('node-telegram-bot-api').default;
+const TelegramBotModule = require('node-telegram-bot-api');
+const TelegramBot =
+  typeof TelegramBotModule === 'function'
+    ? TelegramBotModule
+    : TelegramBotModule.default ||
+      TelegramBotModule.default?.constructor ||
+      TelegramBotModule;
 const { v4: uuidv4 } = require('uuid');
 const db = require('./database');
 
