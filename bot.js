@@ -661,7 +661,7 @@ bot.on('message', async (msg) => {
     return;
   }
 
-  const text = String(msg.text || '').trim();
+  let text = String(msg.text || '').trim();
   const commandMatcher = text.match(/^\/([A-Za-z0-9_]+)(?:\s+(.*))?$/);
   const command = commandMatcher ? commandMatcher[1].toLowerCase() : null;
   const commandPayload = commandMatcher ? (commandMatcher[2] || '').trim() : '';
